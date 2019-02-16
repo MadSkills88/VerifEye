@@ -7,6 +7,7 @@ import cv2
 import numpy as np
 from collections import deque
 import time
+import pandas as pd
 
 t_end = time.time() + 10
 
@@ -19,8 +20,8 @@ print("[INFO] starting video stream thread...")
 # video_capture = cv2.VideoCapture('http://10.19.187.92:8080/video')
 video_capture=cv2.VideoCapture(0)
 
-right_pt = []
-left_pt= []
+right_pts = []
+left_pts= []
 
 def eye_aspect_ratio(eye):
     A = distance.euclidean(eye[1], eye[5])
@@ -64,7 +65,7 @@ def apply_brightness_contrast(input_img, brightness = 0, contrast = 0):
 left_eye_times = []
 right_eye_times = []
 # initialize latest time
-last_time = time.time()
+start_time = time.time()
 while True:
     ret, frame = video_capture.read()
     frame = cv2.flip(frame,1)
@@ -112,7 +113,7 @@ while True:
         max_left_radius = max(leftEye[:,1]) - min(leftEye[:,1])
         max_right_radius = max(rightEye[:,1]) - min(rightEye[:,1])
 
-        dt = time.time() - last_time
+        dt = time.time() - start_time
         if crop_left is not None:
             gray_left = cv2.medianBlur(crop_left, 5)
             if gray_left is not None:
@@ -155,7 +156,9 @@ while True:
                 center = (i[0], i[1])
                 # print(center, left_max)
                 if center != (0,0):
-                    right_pt.append(center)
+                    right_pts.append(center)
+                    right_eye_times.append(right_time - start_time)
+
                 # circle center
                 cv2.circle(crop_right, center, 2, (0, 100, 100), 3)
                 # circle outline
@@ -171,6 +174,7 @@ while True:
                 # print(center, left_max)
                 if center != (0,0):
                     left_pt.append(center)
+                    left_eye_times.append(left_time - start_time)
                 # circle center
                 cv2.circle(crop_left, center, 2, (0, 100, 100), 3)
                 # circle outline
@@ -186,7 +190,7 @@ while True:
                 center = (i[0], i[1])
                 # circle center
                 if i[1] > x_max/2:
-                    right_pt.append(center)
+                    right_pts.append(center)
                 else:
                     left_pt.append(center)
                 cv2.circle(crop_img, center, 1, (0, 100, 100), 3)
@@ -199,14 +203,6 @@ while True:
         cv2.imshow("cropped", crop_left)
         cv2.imshow("output", crop_right)
 
-        # Get right and left eye measurement time steps
-        dt_left = left_time - last_time
-        dt_right = right_time - last_time
-
-        left_eye_times.append(dt_left)
-        right_eye_times.append(dt_right)
-        # Update latest time
-        last_time = time.time()
 
     if(cv2.waitKey(1) & 0xFF == ord('q')):
         break
@@ -214,11 +210,43 @@ while True:
 video_capture.release()
 cv2.destroyAllWindows()
 
-print(right_pt)
-print(left_pt)
+print(right_pts)
+print(left_pts)
 
 print(right_eye_times)
 print(left_eye_times)
+
+right_eye_data = []
+for i in range(len(right_pts)):
+    time_step = right_eye_times[i]
+    right_eye_x = right_pts[i][0]
+    right_eye_y = right_pts[i][1]
+    entry = [time_step, right_eye_x, right_eye_y]
+    right_eye_data.append(entry)
+
+right_eye_data = np.array(right_eye_data)
+
+print(right_eye_data)
+
+left_eye_data = []
+for i in range(len(left_pts)):
+    time_step = left_eye_times[i]
+    left_eye_x = left_pts[i][0]
+    left_eye_y = left_pts[i][1]
+    entry = [time_step, left_eye_x, left_eye_y]
+    left_eye_data.append()
+
+left_eye_data = np.array(left_eye_data)
+
+print(left_eye_data)
+
+right_pd = pd.DataFrame(right_eye_data, columns=['t', 'x', 'y'])
+
+left_pd = pd.DataFrame(left_eye_data, columns=['t', 'x', 'y'])
+
+right_pd.to_csv("../data/right_eye.csv", sep='\t')
+left_pd.to_csv("../data/left_eye.csv", sep='\t')
+
 
 # plt.imshow(crop_img)
 #for i in range(len(right_pt)):
