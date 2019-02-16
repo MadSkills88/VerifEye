@@ -61,6 +61,10 @@ def apply_brightness_contrast(input_img, brightness = 0, contrast = 0):
 
     return buf
 
+left_eye_times = []
+right_eye_times = []
+# initialize latest time
+last_time = time.time()
 while True:
     ret, frame = video_capture.read()
     frame = cv2.flip(frame,1)
@@ -70,7 +74,7 @@ while True:
     gray = cv2.cvtColor(src, cv2.COLOR_BGR2GRAY)
     value = 10
 
-    gray = cv2.multiply(gray, 1.7, gray)  
+    gray = cv2.multiply(gray, 1.7, gray)
     gray = np.where((255 - gray) < value, 255 , gray + value)
 
     subjects = detect(gray, 0)
@@ -86,10 +90,10 @@ while True:
         rightEyeHull = cv2.convexHull(rightEye)
         # cv2.drawContours(src, [leftEyeHull], -1, (0, 255, 0), 1)
         # cv2.drawContours(src, [rightEyeHull], -1, (0, 255, 0), 1)
-        
-        # left_center = ((max(leftEye[:,0]) + min(leftEye[:,0]))//2, 
+
+        # left_center = ((max(leftEye[:,0]) + min(leftEye[:,0]))//2,
         #     (max(leftEye[:,1]) + min(leftEye[:,1]))//2)
-        # right_center = ((max(rightEye[:,0])+  min(rightEye[:,0]))//2, 
+        # right_center = ((max(rightEye[:,0])+  min(rightEye[:,0]))//2,
         #     (max(rightEye[:,1]) + min(rightEye[:,1]))//2)
         # cv2.circle(src, left_center, 3, (255, 0, 255), 3)
         # cv2.circle(src, right_center, 3, (255, 0, 255), 3)
@@ -103,11 +107,12 @@ while True:
         right_range = cv2.rectangle(src, right_min, right_max, (0, 128, 255), 1)
         crop_left = gray[left_min[1]: left_max[1], left_min[0] : left_max[0]]
         crop_right = gray[right_min[1]: right_max[1], right_min[0] : right_max[0]]
-    
+
 
         max_left_radius = max(leftEye[:,1]) - min(leftEye[:,1])
         max_right_radius = max(rightEye[:,1]) - min(rightEye[:,1])
 
+        dt = time.time() - last_time
         if crop_left is not None:
             gray_left = cv2.medianBlur(crop_left, 5)
             if gray_left is not None:
@@ -120,11 +125,13 @@ while True:
 
                 left_iris = cv2.HoughCircles(gray_left, cv2.HOUGH_GRADIENT, 1, rows//16,
                                               param1=100, param2=30,
-                                              minRadius=1, 
+                                              minRadius=1,
                                               maxRadius=max_left_radius)
+                # Get time of left eye measurement
+                left_time = time.time()
 
         if crop_right is not None:
-            
+
             gray_right = cv2.medianBlur(crop_right, 5)
             if gray_right is not None:
 
@@ -136,9 +143,11 @@ while True:
 
                 right_iris = cv2.HoughCircles(gray_right, cv2.HOUGH_GRADIENT, 1, rows//16,
                                               param1=100, param2=30,
-                                              minRadius=1, 
+                                              minRadius=1,
                                               maxRadius=max_right_radius)
-            # print(pupils, iris)
+                # Get time of right eye measurement
+                right_time = time.time()
+        # print(pupils, iris)
         if right_iris is not None:
             # print(iris)
             circles = np.uint16(np.around(right_iris))
@@ -189,16 +198,28 @@ while True:
         '''
         cv2.imshow("cropped", crop_left)
         cv2.imshow("output", crop_right)
-        
-    
+
+        # Get right and left eye measurement time steps
+        dt_left = left_time - last_time
+        dt_right = right_time - last_time
+
+        left_eye_times.append(dt_left)
+        right_eye_times.append(dt_right)
+        # Update latest time
+        last_time = time.time()
+
     if(cv2.waitKey(1) & 0xFF == ord('q')):
         break
 
-video_capture.release()     
-cv2.destroyAllWindows()  
+video_capture.release()
+cv2.destroyAllWindows()
 
 print(right_pt)
 print(left_pt)
+
+print(right_eye_times)
+print(left_eye_times)
+
 # plt.imshow(crop_img)
 #for i in range(len(right_pt)):
 #    plt.scatter(right_pt[i][0], right_pt[i][1])
@@ -208,5 +229,3 @@ print(left_pt)
 
 # plt.savefig('test.jpg')
 #plt.show()
-
-
