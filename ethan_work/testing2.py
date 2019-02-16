@@ -9,6 +9,21 @@ import datetime
 
 import tkinter as tk
 
+import pandas as pd
+
+# Tracking Balls Lists for Pandas Dataframe
+# Forward
+forward_timestamps = []
+forward_x = []
+forward_y = []
+
+#Backward
+backward_timestamps = []
+backward_x = []
+backward_y = []
+
+
+
 # Button set up
 top = tk.Tk()
 buttonPressed = False
@@ -47,10 +62,10 @@ flag = 0
 success = False
 
 startTime = datetime.datetime.now()
-TIME_CAP = 30
+TIME_CAP = 5
 
 n = 0
-x_coords_1 = 100
+x_coords_1 = 600
 negative = False
 
 # Timer inialization
@@ -64,10 +79,10 @@ samples_y_avg = 0
 samples_y_counter = 0
 doneCalibrating = False
 
-samples_x_distance_counter = 0
-samples_x_distance_total = 0
-samples_x_distance_avg = 0
-doneXCalibrating = False
+# samples_x_distance_counter = 0
+# samples_x_distance_total = 0
+# samples_x_distance_avg = 0
+# doneXCalibrating = False
 
 while not success:
     ret, frame = video_capture.read()
@@ -127,9 +142,9 @@ while not success:
         samples_y_counter += 2
         samples_y_total = samples_y_total + leftEyeHull[0][0][1] + rightEyeHull[0][0][1]
 
-        samples_x_distance_counter += 1
-        samples_x_distance_total = samples_x_distance_total + leftEyeHull[0][0][0] - rightEyeHull[0][0][0]
-        print("samples_x_distance_total: ", samples_x_distance_total)
+        # samples_x_distance_counter += 1
+        # samples_x_distance_total = samples_x_distance_total + leftEyeHull[0][0][0] - rightEyeHull[0][0][0]
+        # print("samples_x_distance_total: ", samples_x_distance_total)
 
         if crop_img is None:
             continue
@@ -197,17 +212,20 @@ while not success:
         samples_y_avg = int(samples_y_total / samples_y_counter)
         doneCalibrating = True
 
-    if not doneXCalibrating and samples_x_distance_counter >= 10:
-        samples_x_distance_avg = int(samples_x_distance_total / samples_x_distance_counter)
-        doneXCalibrating = True
+    # if not doneXCalibrating and samples_x_distance_counter >= 10:
+    #     samples_x_distance_avg = int(samples_x_distance_total / samples_x_distance_counter)
+    #     doneXCalibrating = True
 
     timeElapsed = (datetime.datetime.now() - startTime).total_seconds()
+
+    # Make sure it is the same
+
     cv2.putText(img = blacked_image,
                 text = "Press 2 to Start/Restart",
                 org = (0,int(y-y/4)),
                 fontFace = cv2.FONT_HERSHEY_COMPLEX,
                 fontScale = 3,
-                color = (0,0,0),
+                color = (255,255,255),
                 thickness = 3,
                 lineType = cv2.LINE_AA)
 
@@ -215,49 +233,68 @@ while not success:
         startTime = datetime.datetime.now()
         startTest = True
 
+        # and samples_x_distance_avg > 0:
+    if samples_y_avg > 0:
+        if startTest:
+            if timeElapsed < TIME_CAP:
+                # cv2.putText(img = blacked_image,
+                #             text = "Time Elapsed: " + str(timeElapsed) + " s",
+                #             org = (0,int(y/4)),
+                #             fontFace = cv2.FONT_HERSHEY_COMPLEX,
+                #             fontScale = 3,
+                #             color = (255, 255, 255),
+                #             thickness = 3,
+                #             lineType = cv2.LINE_AA)
 
-    if startTest and samples_y_avg > 0 and samples_x_distance_avg > 0:
-        if timeElapsed < TIME_CAP:
-            # cv2.putText(img = blacked_image,
-            #             text = "Time Elapsed: " + str(timeElapsed) + " s",
-            #             org = (0,int(y/4)),
-            #             fontFace = cv2.FONT_HERSHEY_COMPLEX,
-            #             fontScale = 3,
-            #             color = (0,0,0),
-            #             thickness = 3,
-            #             lineType = cv2.LINE_AA)
+                # Circle stuff
+                # Need to align with pupils
+                # x_coords_2 = x_coords_1 + samples_x_distance_avg
 
-            # Circle stuff
-            # Need to align with pupils
-            x_coords_2 = x_coords_1 + samples_x_distance_avg
+                # print("x2", x)
+                # print("xcoords2", x_coords_2)
+                if x_coords_1 >= y - 50:
+                    negative = True
+                elif x_coords_1 < 50:
+                    negative = False
 
-            print("x2", x)
-            print("xcoords2", x_coords_2)
-            if x_coords_2 >= y - 50:
-                negative = True
-            elif x_coords_1 < 50:
-                negative = False
+                # Draw right pupil to the right
+                cv2.circle(blacked_image, (x_coords_1, samples_y_avg), 5, (0,0,255), -1)
 
-            # Draw right pupil to the right
-            cv2.circle(blacked_image, (x_coords_1, samples_y_avg), 5, (0,0,255), -1)
-            cv2.circle(blacked_image, (x_coords_2, samples_y_avg), 5, (0,0,255), -1)
-
-            if negative:
-                x_coords_1-=10
-                x_coords_2 -= 10
+                if negative:
+                    backward_timestamps.append(timeElapsed)
+                    backward_x.append(x_coords_1)
+                    backward_y.append(samples_y_avg)
+                    x_coords_1-=10
+                else:
+                    forward_timestamps.append(timeElapsed)
+                    forward_x.append(x_coords_1)
+                    forward_y.append(samples_y_avg)
+                    x_coords_1+=10
             else:
-                x_coords_1+=10
-                x_coords_2 += 10
-        else:
-            startTest = False
-            cv2.putText(img = blacked_image,
-                        text = "Test Done",
-                        org = (0,int(y/4)),
-                        fontFace = cv2.FONT_HERSHEY_COMPLEX,
-                        fontScale = 3,
-                        color = (0,0,0),
-                        thickness = 3,
-                        lineType = cv2.LINE_AA)
+                startTest = False
+                cv2.putText(img = blacked_image,
+                            text = "Test Done",
+                            org = (0,int(y/4)),
+                            fontFace = cv2.FONT_HERSHEY_COMPLEX,
+                            fontScale = 3,
+                            color = (255,255,255),
+                            thickness = 3,
+                            lineType = cv2.LINE_AA)
+
+                forward = pd.DataFrame(
+                    {'timestamp': forward_timestamps,
+                     'x': forward_x,
+                     'y': forward_y
+                    })
+
+                backward = pd.DataFrame(
+                    {'timestamp': backward_timestamps,
+                     'x': backward_x,
+                     'y': backward_y
+                    })
+
+                forward.to_csv(str(datetime.datetime.now())+"_forward.csv")
+                backward.to_csv(str(datetime.datetime.now())+"_backward.csv")
 
     cv2.imshow("black overlay", blacked_image)
 
