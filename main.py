@@ -1,15 +1,26 @@
 # Inspiration for more accurate eye tracking
 # http://thume.ca/projects/2012/11/04/simple-accurate-eye-center-tracking-in-opencv/
 
-
+# Fabian Timm's Algorithm
 # Livestream video first
 import numpy as np
 import cv2
+from matplotlib import pyplot as plt
+
 
 livestream = cv2.VideoCapture(0)
 
 face_cascade = cv2.CascadeClassifier('haarcascade_frontalface_default.xml')
 eye_cascade = cv2.CascadeClassifier('haarcascade_eye.xml')
+eyeglasses_cascade = cv2.CascadeClassifier('haarcascade_eye_tree_eyeglasses.xml')
+
+# Base off of eye frame
+# uses CAnny algorithm
+# def getPupil(eye):
+#
+#
+#
+# def drawPupil(eye):
 
 while(True):
     ret, frame = livestream.read()
@@ -28,10 +39,20 @@ while(True):
         roi_color = frame[y:y+h, x:x+w]
 
         # Need to make eye detectino more accurate and then track pupils
-        eyes = eye_cascade.detectMultiScale(roi_gray)
+        # Comment out if you have glasses
+        # eyes = eye_cascade.detectMultiScale(roi_gray)
+
+        # Comment out if you dont' have glasses
+        eyes = eyeglasses_cascade.detectMultiScale(roi_gray)
         for (ex,ey,ew,eh) in eyes:
             cv2.rectangle(roi_color,(ex,ey),(ex+ew,ey+eh),(0,255,0),2)
 
+        # for eye in eyes:
+    # edges = cv2.Canny(frame,100,200)
+    # print(edges)
+    # plt.subplot(122),plt.imshow(edges,cmap = 'gray')
+    # plt.title("Edge version"), plt.xticks([]), plt.yticks([])
+    # plt.show()
 
     # Display the resulting frame
     cv2.imshow('frame',frame)
