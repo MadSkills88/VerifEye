@@ -308,36 +308,33 @@ print(left_pts)
 print(right_eye_times)
 print(left_eye_times)
 
-if timeStart:
-    right_eye_data = []
-    for i in range(len(right_pts)):
-        time_step = right_eye_times[i]
-        right_eye_x = right_pts[i][0]
-        right_eye_y = right_pts[i][1]
-        entry = [time_step, right_eye_x, right_eye_y]
-        right_eye_data.append(entry)
+right_eye_data = []
+for i in range(len(right_pts)):
+    time_step = right_eye_times[i]
+    right_eye_x = right_pts[i][0]
+    right_eye_y = right_pts[i][1]
+    entry = [time_step, right_eye_x, right_eye_y]
+    right_eye_data.append(entry)
 
-    right_eye_data = np.array(right_eye_data)
+right_eye_data = np.array(right_eye_data)
 
-    print(right_eye_data)
+print(right_eye_data)
 
-    left_eye_data = []
-    for i in range(len(left_pts)):
-        time_step = left_eye_times[i]
-        left_eye_x = left_pts[i][0]
-        left_eye_y = left_pts[i][1]
-        entry = [time_step, left_eye_x, left_eye_y]
-        left_eye_data.append(entry)
+left_eye_data = []
+for i in range(len(left_pts)):
+    time_step = left_eye_times[i]
+    left_eye_x = left_pts[i][0]
+    left_eye_y = left_pts[i][1]
+    entry = [time_step, left_eye_x, left_eye_y]
+    left_eye_data.append(entry)
 
-    left_eye_data = np.array(left_eye_data)
+left_eye_data = np.array(left_eye_data)
 
-    print(left_eye_data)
+print(left_eye_data)
 
-    right_pd = pd.DataFrame(right_eye_data, columns=['t', 'x', 'y'])
+right_pd = pd.DataFrame(right_eye_data, columns=['t', 'x', 'y'])
 
-    left_pd = pd.DataFrame(left_eye_data, columns=['t', 'x', 'y'])
+left_pd = pd.DataFrame(left_eye_data, columns=['t', 'x', 'y'])
 
-    right_pd.to_csv("data/right_eye.csv", sep='\t')
-    left_pd.to_csv("data/left_eye.csv", sep='\t')
-else:
-    print("No data written for eyes")
+right_pd.to_csv("data/right_eye.csv", sep='\t')
+left_pd.to_csv("data/left_eye.csv", sep='\t')
