@@ -339,5 +339,5 @@ right_pd = pd.DataFrame(right_eye_data, columns=['t', 'x', 'y'])
 
 left_pd = pd.DataFrame(left_eye_data, columns=['t', 'x', 'y'])
 
-right_pd.to_csv("data/right_eye.csv", sep='\t')
-left_pd.to_csv("data/left_eye.csv", sep='\t')
+right_pd.to_csv("data/right_eye.csv")
+left_pd.to_csv("data/left_eye.csv")
