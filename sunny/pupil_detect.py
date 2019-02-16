@@ -36,8 +36,9 @@ while not success:
     frame = cv2.flip(frame,1)
     src = imutils.resize(frame, width=1200)
     x, y, channels = src.shape
+    crop_img = src
 
-    # src = cv2.imread('aaron_paul.jpg')
+    src = cv2.imread('aaron_paul.jpg')
     gray = cv2.cvtColor(src, cv2.COLOR_BGR2GRAY)
 
     subjects = detect(gray, 0)
@@ -67,31 +68,28 @@ while not success:
         right_min = (min(rightEye[:,0]) - 10, min(rightEye[:,1]) - 10)
         #     (max(leftEye[:,1]) + min(leftEye[:,1]))//2)
         left_range = cv2.rectangle(src, left_min, left_max, (0, 128, 255), 1)
-        print("left_range", left_range)
         right_range = cv2.rectangle(src, right_min, right_max, (0, 128, 255), 1)
         crop_img = gray[min(left_min[1], right_min[1]): max(left_max[1], right_max[1]),
         min(left_min[0], right_min[0]): max(left_max[0], right_max[0])]
     
 
         maxradius = max(leftEye[:,1]) - min(leftEye[:,1])
-        # print(maxradius)
-        # gray = cv2.medianBlur(gray, 5)[min(leftEye[:, 0] - 5): np.max(leftEye[:, 0] + 5), 
-        #    min(rightEye[:, 0] - 5): np.max(rightEye[:, 0] + 5)]
 
+        if crop_img is None:
+            continue
         gray = cv2.medianBlur(crop_img, 5)
 
         rows = gray.shape[0]
         # Detect pupils
-        pupils = cv2.HoughCircles(gray,
-            cv2.HOUGH_GRADIENT, 1, rows / 16,
-                                  # param1=100, param2=30,
-                                  minRadius=1, maxRadius=maxradius//2 + maxradius//3)
+        pupils = cv2.HoughCircles(gray, cv2.HOUGH_GRADIENT, 1, rows//16,
+                                      param1=100, param2=30,
+                                      minRadius=1, maxRadius=maxradius//2)
 
-        iris = cv2.HoughCircles(gray, cv2.HOUGH_GRADIENT, 1, rows / 16,
-                                  # param1=100, param2=30,
-                                  minRadius=maxradius//3, 
-                                  maxRadius=maxradius + maxradius//3)
-        
+        iris = cv2.HoughCircles(gray, cv2.HOUGH_GRADIENT, 1, rows//16,
+                                      param1=100, param2=30,
+                                      minRadius=maxradius//2, 
+                                      maxRadius=maxradius + 10)
+        print(pupils, iris)
         if iris is not None:
             # print(iris)
             circles = np.uint16(np.around(iris))
