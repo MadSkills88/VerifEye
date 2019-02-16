@@ -130,52 +130,53 @@ while not success:
             continue
         gray = cv2.medianBlur(crop_img, 5)
 
-        rows = gray.shape[0]
-        # Detect pupils
-        pupils = cv2.HoughCircles(gray, cv2.HOUGH_GRADIENT, 1, rows // 16,
-                                      param1=100, param2=30,
-                                      minRadius=1, maxRadius=maxradius // 2)
+        if gray is not None:
+            rows = gray.shape[0]
+            # Detect pupils
+            pupils = cv2.HoughCircles(gray, cv2.HOUGH_GRADIENT, 1, rows // 16,
+                                          param1=100, param2=30,
+                                          minRadius=1, maxRadius=maxradius // 2)
 
-        iris = cv2.HoughCircles(gray, cv2.HOUGH_GRADIENT, 1, rows // 16,
-                                      param1=100, param2=30,
-                                      minRadius=maxradius // 2,
-                                      maxRadius=maxradius + 10)
-        print(pupils, iris)
-        if iris is not None:
-            # print(iris)
-            circles = np.uint16(np.around(iris))
-            for i in circles[0, :]:
-                center = (i[0], i[1])
-                # circle center
-                cv2.circle(crop_img, center, 1, (0, 100, 100), 3)
-                # circle outline
-                radius = i[2]
-                # print("radius: ", radius)
-                cv2.circle(crop_img, center, radius, (255, 0, 255), 3)
-                cv2.rectangle(
-                    crop_img, (i[0] - 5, i[1] - 5), (i[0] + 5, i[1] + 5), (0, 128, 255), -1)
+            iris = cv2.HoughCircles(gray, cv2.HOUGH_GRADIENT, 1, rows // 16,
+                                          param1=100, param2=30,
+                                          minRadius=maxradius // 2,
+                                          maxRadius=maxradius + 10)
+            print(pupils, iris)
+            if iris is not None:
+                # print(iris)
+                circles = np.uint16(np.around(iris))
+                for i in circles[0, :]:
+                    center = (i[0], i[1])
+                    # circle center
+                    cv2.circle(crop_img, center, 1, (0, 100, 100), 3)
+                    # circle outline
+                    radius = i[2]
+                    # print("radius: ", radius)
+                    cv2.circle(crop_img, center, radius, (255, 0, 255), 3)
+                    cv2.rectangle(
+                        crop_img, (i[0] - 5, i[1] - 5), (i[0] + 5, i[1] + 5), (0, 128, 255), -1)
 
-        if pupils is not None:
-            # print(iris)
-            # UNCOMMENT OUT WHEN PUPILS ARE DETECTED LMAO
-            # samples_y_counter += 1
-
-            circles = np.uint16(np.around(pupils))
-            for i in circles[0, :]:
-                center = (i[0], i[1])
+            if pupils is not None:
+                # print(iris)
                 # UNCOMMENT OUT WHEN PUPILS ARE DETECTED LMAO
-                # samples_y_total += i[1]
+                # samples_y_counter += 1
 
-                # circle center
-                cv2.circle(crop_img, center, 1, (0, 100, 100), 3)
-                # circle outline
-                radius = i[2]
-                # print("radius: ", radius)
-                cv2.circle(crop_img, center, radius, (255, 0, 255), 3)
-                cv2.rectangle(
-                    crop_img, (i[0] - 5, i[1] - 5), (i[0] + 5, i[1] + 5), (0, 128, 255), -1)
+                circles = np.uint16(np.around(pupils))
+                for i in circles[0, :]:
+                    center = (i[0], i[1])
+                    # UNCOMMENT OUT WHEN PUPILS ARE DETECTED LMAO
+                    # samples_y_total += i[1]
 
-        cv2.imshow("cropped", crop_img)
+                    # circle center
+                    cv2.circle(crop_img, center, 1, (0, 100, 100), 3)
+                    # circle outline
+                    radius = i[2]
+                    # print("radius: ", radius)
+                    cv2.circle(crop_img, center, radius, (255, 0, 255), 3)
+                    cv2.rectangle(
+                        crop_img, (i[0] - 5, i[1] - 5), (i[0] + 5, i[1] + 5), (0, 128, 255), -1)
+
+            cv2.imshow("cropped", crop_img)
     # timer: https://stackoverflow.com/questions/28421559/python-opencv-display-time-countdown-using-puttext-in-webcam-vide
     # Check if it has been over 5 minutes
     # Display timer rn
