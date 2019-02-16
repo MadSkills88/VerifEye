@@ -156,8 +156,11 @@ while True:
         samples_y_counter += 2
         samples_y_total = samples_y_total + leftEyeHull[0][0][1] + rightEyeHull[0][0][1]
 
-        timeElapsed = (datetime.datetime.now() - startTime).total_seconds()
-
+        if startTest and doneCalibrating:
+            timeElapsed = (datetime.datetime.now() - startTime).total_seconds()
+            print("timeElapsed", timeElapsed)
+        else:
+            timeElapsed = 0
         
         if crop_left is not None:
             gray_left = cv2.medianBlur(crop_left, 5)
@@ -194,7 +197,7 @@ while True:
                 # print(center, left_max)
                 if center != (0,0) and startTest == True:
                     right_pts.append(center)
-                    right_eye_times.append(elapsedTime)
+                    right_eye_times.append(timeElapsed)
 
                 # circle center
                 cv2.circle(crop_right, center, 2, (0, 100, 100), 3)
@@ -211,7 +214,7 @@ while True:
                 # print(center, left_max)
                 if center != (0,0) and startTest == True:
                     left_pts.append(center)
-                    left_eye_times.append(elapsedTime)
+                    left_eye_times.append(timeElapsed)
                 # circle center
                 cv2.circle(crop_left, center, 2, (0, 100, 100), 3)
                 # circle outline
@@ -243,9 +246,9 @@ while True:
         startTest = True
 
         # and samples_x_distance_avg > 0:
-    if samples_y_avg > 0:
+    if doneCalibrating:
         if startTest:
-            print(TIME_CAP)
+            print(TIME_CAP, timeElapsed)
             if timeElapsed < TIME_CAP:
                 if x_coords_1 >= y - 50:
                     negative = True
@@ -290,8 +293,8 @@ while True:
                      'y': backward_y
                     })
 
-                forward.to_csv(str(datetime.datetime.now())+"_forward.csv")
-                backward.to_csv(str(datetime.datetime.now())+"_backward.csv")
+                forward.to_csv("_forward.csv")
+                backward.to_csv("_backward.csv")
 
     cv2.imshow("black overlay", blacked_image)
 
@@ -308,37 +311,35 @@ print(left_pts)
 print(right_eye_times)
 print(left_eye_times)
 
-if timeStart:
-    right_eye_data = []
-    for i in range(len(right_pts)):
-        time_step = right_eye_times[i]
-        right_eye_x = right_pts[i][0]
-        right_eye_y = right_pts[i][1]
-        entry = [time_step, right_eye_x, right_eye_y]
-        right_eye_data.append(entry)
+right_eye_data = []
+for i in range(len(right_pts)):
+    time_step = right_eye_times[i]
+    right_eye_x = right_pts[i][0]
+    right_eye_y = right_pts[i][1]
+    entry = [time_step, right_eye_x, right_eye_y]
+    right_eye_data.append(entry)
 
-    right_eye_data = np.array(right_eye_data)
+right_eye_data = np.array(right_eye_data)
 
-    print(right_eye_data)
+print(right_eye_data)
 
-    left_eye_data = []
-    for i in range(len(left_pts)):
-        time_step = left_eye_times[i]
-        left_eye_x = left_pts[i][0]
-        left_eye_y = left_pts[i][1]
-        entry = [time_step, left_eye_x, left_eye_y]
-        left_eye_data.append(entry)
+left_eye_data = []
+for i in range(len(left_pts)):
+    time_step = left_eye_times[i]
+    left_eye_x = left_pts[i][0]
+    left_eye_y = left_pts[i][1]
+    entry = [time_step, left_eye_x, left_eye_y]
+    left_eye_data.append(entry)
 
-    left_eye_data = np.array(left_eye_data)
+left_eye_data = np.array(left_eye_data)
 
-    print(left_eye_data)
+print(left_eye_data)
 
-    right_pd = pd.DataFrame(right_eye_data, columns=['t', 'x', 'y'])
+right_pd = pd.DataFrame(right_eye_data, columns=['t', 'x', 'y'])
 
-    left_pd = pd.DataFrame(left_eye_data, columns=['t', 'x', 'y'])
+left_pd = pd.DataFrame(left_eye_data, columns=['t', 'x', 'y'])
 
-    right_pd.to_csv("data/right_eye.csv", sep='\t')
-    left_pd.to_csv("data/left_eye.csv", sep='\t')
-else:
-    print("No data written for eyes")
+right_pd.to_csv("data/right_eye.csv", sep='\t')
+left_pd.to_csv("data/left_eye.csv", sep='\t')
+
 
