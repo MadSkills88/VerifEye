@@ -64,7 +64,7 @@ def apply_brightness_contrast(input_img, brightness = 0, contrast = 0):
 left_eye_times = []
 right_eye_times = []
 # initialize latest time
-last_time = time.time()
+start_time = time.time()
 while True:
     ret, frame = video_capture.read()
     frame = cv2.flip(frame,1)
@@ -112,7 +112,7 @@ while True:
         max_left_radius = max(leftEye[:,1]) - min(leftEye[:,1])
         max_right_radius = max(rightEye[:,1]) - min(rightEye[:,1])
 
-        dt = time.time() - last_time
+        dt = time.time() - start_time
         if crop_left is not None:
             gray_left = cv2.medianBlur(crop_left, 5)
             if gray_left is not None:
@@ -156,6 +156,8 @@ while True:
                 # print(center, left_max)
                 if center != (0,0):
                     right_pt.append(center)
+                    right_eye_times.append(right_time - start_time)
+
                 # circle center
                 cv2.circle(crop_right, center, 2, (0, 100, 100), 3)
                 # circle outline
@@ -171,6 +173,7 @@ while True:
                 # print(center, left_max)
                 if center != (0,0):
                     left_pt.append(center)
+                    left_eye_times.append(left_time - start_time)
                 # circle center
                 cv2.circle(crop_left, center, 2, (0, 100, 100), 3)
                 # circle outline
@@ -199,14 +202,6 @@ while True:
         cv2.imshow("cropped", crop_left)
         cv2.imshow("output", crop_right)
 
-        # Get right and left eye measurement time steps
-        dt_left = left_time - last_time
-        dt_right = right_time - last_time
-
-        left_eye_times.append(dt_left)
-        right_eye_times.append(dt_right)
-        # Update latest time
-        last_time = time.time()
 
     if(cv2.waitKey(1) & 0xFF == ord('q')):
         break
