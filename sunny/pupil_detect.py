@@ -173,7 +173,7 @@ while True:
                 center = (i[0], i[1])
                 # print(center, left_max)
                 if center != (0,0):
-                    left_pt.append(center)
+                    left_pts.append(center)
                     left_eye_times.append(left_time - start_time)
                 # circle center
                 cv2.circle(crop_left, center, 2, (0, 100, 100), 3)
@@ -234,7 +234,7 @@ for i in range(len(left_pts)):
     left_eye_x = left_pts[i][0]
     left_eye_y = left_pts[i][1]
     entry = [time_step, left_eye_x, left_eye_y]
-    left_eye_data.append()
+    left_eye_data.append(entry)
 
 left_eye_data = np.array(left_eye_data)
 
@@ -244,8 +244,9 @@ right_pd = pd.DataFrame(right_eye_data, columns=['t', 'x', 'y'])
 
 left_pd = pd.DataFrame(left_eye_data, columns=['t', 'x', 'y'])
 
-right_pd.to_csv("../data/right_eye.csv", sep='\t')
-left_pd.to_csv("../data/left_eye.csv", sep='\t')
+right_pd.to_csv("data/right_eye.csv", sep='\t')
+left_pd.to_csv("data/left_eye.csv", sep='\t')
+
 
 
 # plt.imshow(crop_img)
