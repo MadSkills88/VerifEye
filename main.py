@@ -23,7 +23,7 @@ backward_timestamps = []
 backward_x = []
 backward_y = []
 
-TIME_CAP = 5
+TIME_CAP = 10
 
 n = 0
 x_coords_1 = 600
@@ -293,8 +293,8 @@ while True:
                      'y': backward_y
                     })
 
-                forward.to_csv("_forward.csv")
-                backward.to_csv("_backward.csv")
+                forward.to_csv("data/forward.csv")
+                backward.to_csv("data/backward.csv")
 
     cv2.imshow("black overlay", blacked_image)
 
@@ -341,5 +341,4 @@ left_pd = pd.DataFrame(left_eye_data, columns=['t', 'x', 'y'])
 
 right_pd.to_csv("data/right_eye.csv", sep='\t')
 left_pd.to_csv("data/left_eye.csv", sep='\t')
-
 
