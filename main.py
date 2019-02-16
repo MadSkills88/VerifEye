@@ -158,7 +158,7 @@ while True:
 
         timeElapsed = (datetime.datetime.now() - startTime).total_seconds()
 
-        
+
         if crop_left is not None:
             gray_left = cv2.medianBlur(crop_left, 5)
             if gray_left is not None:
@@ -290,8 +290,8 @@ while True:
                      'y': backward_y
                     })
 
-                forward.to_csv(str(datetime.datetime.now())+"_forward.csv")
-                backward.to_csv(str(datetime.datetime.now())+"_backward.csv")
+                forward.to_csv("forward.csv")
+                backward.to_csv("backward.csv")
 
     cv2.imshow("black overlay", blacked_image)
 
@@ -341,4 +341,3 @@ if timeStart:
     left_pd.to_csv("data/left_eye.csv", sep='\t')
 else:
     print("No data written for eyes")
-
