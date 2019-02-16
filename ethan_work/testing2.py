@@ -78,6 +78,11 @@ while not success:
     print("x: ", x)
     print("y: ", y)
 
+    blacked_image = np.ones((512,512,3))
+    blacked_image = cv2.resize(blacked_image, (y, x))
+    print(blacked_image.shape)
+    # cv2.imshow("image 2", my_image_2)
+
     # src = cv2.imread('aaron_paul.jpg')
     gray = cv2.cvtColor(src, cv2.COLOR_BGR2GRAY)
 
@@ -177,6 +182,12 @@ while not success:
                         crop_img, (i[0] - 5, i[1] - 5), (i[0] + 5, i[1] + 5), (0, 128, 255), -1)
 
             cv2.imshow("cropped", crop_img)
+
+    # show the output src
+    cv2.imshow("output", src)
+
+    cv2.imshow("detected circles", src)
+
     # timer: https://stackoverflow.com/questions/28421559/python-opencv-display-time-countdown-using-puttext-in-webcam-vide
     # Check if it has been over 5 minutes
     # Display timer rn
@@ -191,12 +202,12 @@ while not success:
         doneXCalibrating = True
 
     timeElapsed = (datetime.datetime.now() - startTime).total_seconds()
-    cv2.putText(img = src,
+    cv2.putText(img = blacked_image,
                 text = "Press 2 to Start/Restart",
                 org = (0,int(y-y/4)),
                 fontFace = cv2.FONT_HERSHEY_COMPLEX,
                 fontScale = 3,
-                color = (255,255,255),
+                color = (0,0,0),
                 thickness = 3,
                 lineType = cv2.LINE_AA)
 
@@ -207,14 +218,14 @@ while not success:
 
     if startTest and samples_y_avg > 0 and samples_x_distance_avg > 0:
         if timeElapsed < TIME_CAP:
-            cv2.putText(img = src,
-                        text = "Time Elapsed: " + str(timeElapsed) + " s",
-                        org = (0,int(y/4)),
-                        fontFace = cv2.FONT_HERSHEY_COMPLEX,
-                        fontScale = 3,
-                        color = (0,0,0),
-                        thickness = 3,
-                        lineType = cv2.LINE_AA)
+            # cv2.putText(img = blacked_image,
+            #             text = "Time Elapsed: " + str(timeElapsed) + " s",
+            #             org = (0,int(y/4)),
+            #             fontFace = cv2.FONT_HERSHEY_COMPLEX,
+            #             fontScale = 3,
+            #             color = (0,0,0),
+            #             thickness = 3,
+            #             lineType = cv2.LINE_AA)
 
             # Circle stuff
             # Need to align with pupils
@@ -228,8 +239,8 @@ while not success:
                 negative = False
 
             # Draw right pupil to the right
-            cv2.circle(src, (x_coords_1, samples_y_avg), 5, (0,0,255), -1)
-            cv2.circle(src, (x_coords_2, samples_y_avg), 5, (0,0,255), -1)
+            cv2.circle(blacked_image, (x_coords_1, samples_y_avg), 5, (0,0,255), -1)
+            cv2.circle(blacked_image, (x_coords_2, samples_y_avg), 5, (0,0,255), -1)
 
             if negative:
                 x_coords_1-=10
@@ -239,7 +250,7 @@ while not success:
                 x_coords_2 += 10
         else:
             startTest = False
-            cv2.putText(img = src,
+            cv2.putText(img = blacked_image,
                         text = "Test Done",
                         org = (0,int(y/4)),
                         fontFace = cv2.FONT_HERSHEY_COMPLEX,
@@ -248,6 +259,7 @@ while not success:
                         thickness = 3,
                         lineType = cv2.LINE_AA)
 
+    cv2.imshow("black overlay", blacked_image)
 
 
 
@@ -255,10 +267,8 @@ while not success:
 
     # move circle across screen
 
-    # show the output src
-    cv2.imshow("output", src)
 
-    cv2.imshow("detected circles", src)
+
     # cv2.imshow('Video', frame)
 
     if(cv2.waitKey(1) & 0xFF == ord('q')):
