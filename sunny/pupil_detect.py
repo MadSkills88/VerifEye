@@ -17,7 +17,7 @@ detect = dlib.get_frontal_face_detector()
 predict = dlib.shape_predictor("shape_predictor_68_face_landmarks.dat")
 
 print("[INFO] starting video stream thread...")
-# video_capture = cv2.VideoCapture('http://10.19.187.92:8080/video')
+
 video_capture=cv2.VideoCapture(0)
 
 right_pts = []
@@ -89,15 +89,7 @@ while True:
         ear = (leftEAR + rightEAR) / 2.0
         leftEyeHull = cv2.convexHull(leftEye)
         rightEyeHull = cv2.convexHull(rightEye)
-        # cv2.drawContours(src, [leftEyeHull], -1, (0, 255, 0), 1)
-        # cv2.drawContours(src, [rightEyeHull], -1, (0, 255, 0), 1)
 
-        # left_center = ((max(leftEye[:,0]) + min(leftEye[:,0]))//2,
-        #     (max(leftEye[:,1]) + min(leftEye[:,1]))//2)
-        # right_center = ((max(rightEye[:,0])+  min(rightEye[:,0]))//2,
-        #     (max(rightEye[:,1]) + min(rightEye[:,1]))//2)
-        # cv2.circle(src, left_center, 3, (255, 0, 255), 3)
-        # cv2.circle(src, right_center, 3, (255, 0, 255), 3)
         left_max = (np.max(leftEye[:, 0] + 10), np.max(leftEye[:, 1]) + 10)
         left_min = (min(leftEye[:, 0]) - 10, min(leftEye[:, 1]) - 10)
 
@@ -120,9 +112,6 @@ while True:
 
                 rows = gray_left.shape[0]
                 # Detect pupils
-                # pupils = cv2.HoughCircles(gray, cv2.HOUGH_GRADIENT, 1, rows//16,
-                #                               param1=100, param2=30,
-                #                               minRadius=1, maxRadius=maxradius//2)
 
                 left_iris = cv2.HoughCircles(gray_left, cv2.HOUGH_GRADIENT, 1, rows//16,
                                               param1=100, param2=30,
@@ -137,10 +126,6 @@ while True:
             if gray_right is not None:
 
                 rows = gray_right.shape[0]
-                # Detect pupils
-                # pupils = cv2.HoughCircles(gray, cv2.HOUGH_GRADIENT, 1, rows//16,
-                #                               param1=100, param2=30,
-                #                               minRadius=1, maxRadius=maxradius//2)
 
                 right_iris = cv2.HoughCircles(gray_right, cv2.HOUGH_GRADIENT, 1, rows//16,
                                               param1=100, param2=30,
@@ -181,25 +166,7 @@ while True:
                 radius = i[2]
                 cv2.circle(crop_left, center, radius, (255, 0, 255), 3)
                 cv2.rectangle(crop_left, (i[0] - 5, i[1] - 5), (i[0] + 5, i[1] + 5), (0, 128, 255), -1)
-        '''
-        pupils = None
-        if pupils is not None:
-            # print(iris)
-            circles = np.uint16(np.around(pupils))
-            for i in circles[0, :]:
-                center = (i[0], i[1])
-                # circle center
-                if i[1] > x_max/2:
-                    right_pts.append(center)
-                else:
-                    left_pt.append(center)
-                cv2.circle(crop_img, center, 1, (0, 100, 100), 3)
-                # circle outline
-                radius = i[2]
-                # print("radius: ", radius)
-                cv2.circle(crop_img, center, radius, (255, 0, 255), 3)
-                cv2.rectangle(crop_img, (i[0] - 5, i[1] - 5), (i[0] + 5, i[1] + 5), (0, 128, 255), -1)
-        '''
+
         cv2.imshow("cropped", crop_left)
         cv2.imshow("output", crop_right)
 
@@ -247,14 +214,3 @@ left_pd = pd.DataFrame(left_eye_data, columns=['t', 'x', 'y'])
 right_pd.to_csv("data/right_eye.csv", sep='\t')
 left_pd.to_csv("data/left_eye.csv", sep='\t')
 
-
-
-# plt.imshow(crop_img)
-#for i in range(len(right_pt)):
-#    plt.scatter(right_pt[i][0], right_pt[i][1])
-#
-#for i in range(len(left_pt)):
-#    plt.scatter(left_pt[i][0], left_pt[i][1])
-
-# plt.savefig('test.jpg')
-#plt.show()
