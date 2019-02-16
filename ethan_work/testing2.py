@@ -78,7 +78,7 @@ while not success:
     print("x: ", x)
     print("y: ", y)
 
-    blacked_image = np.ones((512,512,3))
+    blacked_image = np.zeros((512,512,3))
     blacked_image = cv2.resize(blacked_image, (y, x))
     print(blacked_image.shape)
     # cv2.imshow("image 2", my_image_2)
