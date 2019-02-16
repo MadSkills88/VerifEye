@@ -290,8 +290,8 @@ while True:
                      'y': backward_y
                     })
 
-                forward.to_csv("forward.csv")
-                backward.to_csv("backward.csv")
+                forward.to_csv("data/forward.csv")
+                backward.to_csv("data/backward.csv")
 
     cv2.imshow("black overlay", blacked_image)
 
