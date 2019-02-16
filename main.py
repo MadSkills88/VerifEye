@@ -226,7 +226,8 @@ while True:
                 cv2.rectangle(crop_left, (i[0] - 5, i[1] - 5), (i[0] + 5, i[1] + 5), (0, 128, 255), -1)
                 break
 
-        cv2.imshow("cropped", crop_left)
+        cv2.imshow("right", crop_left)
+        cv2.imshow("left", crop_right)
 
         if not doneCalibrating and samples_y_counter >= 20:
             print("samples_y_total: ", samples_y_total)
@@ -263,7 +264,7 @@ while True:
                     negative = False
 
                 # Draw right pupil to the right
-                print("samples_y_avg: ", samples_y_avg)
+                # print("samples_y_avg: ", samples_y_avg)
                 cv2.circle(blacked_image, (x_coords_1, 20), 15, (0,0,255), -1)
 
                 # To account for lag
@@ -289,7 +290,7 @@ while True:
                     forward_y.append(samples_y_avg)
                     x_coords_1+=15
             else:
-                print("timeElapsed: ", timeElapsed)
+                # print("timeElapsed: ", timeElapsed)
                 startTest = False
                 breakDownAllWindows = True
                 cv2.putText(img = blacked_image,
@@ -328,8 +329,8 @@ cv2.destroyAllWindows()
 print(right_pts)
 print(left_pts)
 
-print(right_eye_times)
-print(left_eye_times)
+# print(right_eye_times)
+# print(left_eye_times)
 if right_pts:
     right_eye_data = []
     for i in range(len(right_pts)):
@@ -341,7 +342,6 @@ if right_pts:
 
     right_eye_data = np.array(right_eye_data)
 
-    print(right_eye_data)
 if left_pts:
     left_eye_data = []
     for i in range(len(left_pts)):
@@ -349,14 +349,13 @@ if left_pts:
         left_eye_x = left_pts[i][0]
         left_eye_y = left_pts[i][1]
         entry = [time_step, left_eye_x, left_eye_y]
-    left_eye_data.append(entry)
+        left_eye_data.append(entry)
 
     left_eye_data = np.array(left_eye_data)
 
 # print(left_eye_data)
 if right_pts and left_pts:
     right_pd = pd.DataFrame(right_eye_data, columns=['t', 'x', 'y'])
-
     left_pd = pd.DataFrame(left_eye_data, columns=['t', 'x', 'y'])
 
     right_pd.to_csv("data/right_eye.csv")
