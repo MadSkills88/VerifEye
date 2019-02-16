@@ -53,15 +53,16 @@ while(True):
             (ex,ey,ew,eh) = eye
             # print("eye")
             # print(type(eye))
+            # cv2.rectangle(roi_color,(ex,ey),(ex+ew,ey+eh),(0,255,0),2)
+            # crop_img = frame[y:y+ey+eh, x:x+ex+ew]
+            # print(y+ey+eh)
+            # print(x+ex+ew)
+            # cv2.imshow("cropped", crop_img)
+            # edges = cv2.Canny(crop_img,100,200)
+            # plt.subplot(122),plt.imshow(edges,cmap = 'gray')
+            # plt.title("Edge version"), plt.xticks([]), plt.yticks([])
+            # plt.show()
             cv2.rectangle(roi_color,(ex,ey),(ex+ew,ey+eh),(0,255,0),2)
-            crop_img = frame[y:y+ey+eh, x:x+ex+ew]
-            print(y+ey+eh)
-            print(x+ex+ew)
-            cv2.imshow("cropped", crop_img)
-            edges = cv2.Canny(crop_img,100,200)
-            plt.subplot(122),plt.imshow(edges,cmap = 'gray')
-            plt.title("Edge version"), plt.xticks([]), plt.yticks([])
-            plt.show()
         # for (ex,ey,ew,eh) in eyes:
         #     cv2.rectangle(roi_color,(ex,ey),(ex+ew,ey+eh),(0,255,0),2)
 

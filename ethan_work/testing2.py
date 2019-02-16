@@ -232,11 +232,11 @@ while not success:
             cv2.circle(src, (x_coords_2, samples_y_avg), 5, (0,0,255), -1)
 
             if negative:
-                x_coords_1-=5
-                x_coords_2 -= 5
+                x_coords_1-=10
+                x_coords_2 -= 10
             else:
-                x_coords_1+=5
-                x_coords_2 += 5
+                x_coords_1+=10
+                x_coords_2 += 10
         else:
             startTest = False
             cv2.putText(img = src,
