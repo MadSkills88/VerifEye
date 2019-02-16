@@ -161,7 +161,7 @@ while True:
             print("timeElapsed", timeElapsed)
         else:
             timeElapsed = 0
-        
+
         if crop_left is not None:
             gray_left = cv2.medianBlur(crop_left, 5)
             if gray_left is not None:
@@ -257,7 +257,7 @@ while True:
 
                 # Draw right pupil to the right
                 print("samples_y_avg: ", samples_y_avg)
-                cv2.circle(blacked_image, (x_coords_1, samples_y_avg), 5, (0,0,255), -1)
+                cv2.circle(blacked_image, (x_coords_1, samples_y_avg), 20, (0,0,255), -1)
 
                 if negative:
                     backward_timestamps.append(timeElapsed)
@@ -341,4 +341,3 @@ left_pd = pd.DataFrame(left_eye_data, columns=['t', 'x', 'y'])
 
 right_pd.to_csv("data/right_eye.csv", sep='\t')
 left_pd.to_csv("data/left_eye.csv", sep='\t')
-
