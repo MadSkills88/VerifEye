@@ -50,7 +50,7 @@ startTime = datetime.datetime.now()
 TIME_CAP = 30
 
 n = 0
-x_coords = 100
+x_coords_1 = 100
 negative = False
 
 # Timer inialization
@@ -64,12 +64,19 @@ samples_y_avg = 0
 samples_y_counter = 0
 doneCalibrating = False
 
+samples_x_distance_counter = 0
+samples_x_distance_total = 0
+samples_x_distance_avg = 0
+doneXCalibrating = False
+
 while not success:
     ret, frame = video_capture.read()
     frame = cv2.flip(frame, 1)
     src = imutils.resize(frame, width=1200)
     x, y, channels = src.shape
     crop_img = src
+    print("x: ", x)
+    print("y: ", y)
 
     # src = cv2.imread('aaron_paul.jpg')
     gray = cv2.cvtColor(src, cv2.COLOR_BGR2GRAY)
@@ -114,6 +121,10 @@ while not success:
 
         samples_y_counter += 2
         samples_y_total = samples_y_total + leftEyeHull[0][0][1] + rightEyeHull[0][0][1]
+
+        samples_x_distance_counter += 1
+        samples_x_distance_total = samples_x_distance_total + leftEyeHull[0][0][0] - rightEyeHull[0][0][0]
+        print("samples_x_distance_total: ", samples_x_distance_total)
 
         if crop_img is None:
             continue
@@ -174,6 +185,10 @@ while not success:
         samples_y_avg = int(samples_y_total / samples_y_counter)
         doneCalibrating = True
 
+    if not doneXCalibrating and samples_x_distance_counter >= 10:
+        samples_x_distance_avg = int(samples_x_distance_total / samples_x_distance_counter)
+        doneXCalibrating = True
+
     timeElapsed = (datetime.datetime.now() - startTime).total_seconds()
     cv2.putText(img = src,
                 text = "Press 2 to Start/Restart",
@@ -189,7 +204,7 @@ while not success:
         startTest = True
 
 
-    if startTest and samples_y_avg > 0:
+    if startTest and samples_y_avg > 0 and samples_x_distance_avg > 0:
         if timeElapsed < TIME_CAP:
             cv2.putText(img = src,
                         text = "Time Elapsed: " + str(timeElapsed) + " s",
@@ -202,16 +217,25 @@ while not success:
 
             # Circle stuff
             # Need to align with pupils
-            if x_coords >= x-50:
+            x_coords_2 = x_coords_1 + samples_x_distance_avg
+
+            print("x2", x)
+            print("xcoords2", x_coords_2)
+            if x_coords_2 >= y - 50:
                 negative = True
-            elif x_coords < 50:
+            elif x_coords_1 < 50:
                 negative = False
 
-            cv2.circle(src, (x_coords, samples_y_avg), 5, (0,0,255), -1)
+            # Draw right pupil to the right
+            cv2.circle(src, (x_coords_1, samples_y_avg), 5, (0,0,255), -1)
+            cv2.circle(src, (x_coords_2, samples_y_avg), 5, (0,0,255), -1)
+
             if negative:
-                x_coords-=5
+                x_coords_1-=5
+                x_coords_2 -= 5
             else:
-                x_coords+=5
+                x_coords_1+=5
+                x_coords_2 += 5
         else:
             startTest = False
             cv2.putText(img = src,
