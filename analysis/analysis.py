@@ -91,18 +91,19 @@ print(v_left_eye_x)
 # plt.scatter(diff_right_eye_t, diff_right_eye_y, c='orange')
 
 ## Velocity plots and scatter
-line_lx, = plt.plot(left_eye_t[1:], v_left_eye_x, c='g', label="left eye x")
-line_ly, = plt.plot(left_eye_t[1:], v_left_eye_y, c='b', label="left eye y")
+line_lx, = plt.plot(left_eye_t[1:], v_left_eye_x, c='g', label="left eye horizontal velocity")
+line_ly, = plt.plot(left_eye_t[1:], v_left_eye_y, c='b', label="left eye vertical velocity")
 
-line_rx, = plt.plot(right_eye_t[1:], v_right_eye_x, c='r', label="right eye x")
-line_ry, = plt.plot(right_eye_t[1:], v_right_eye_y, c='orange', label="right eye y")
+line_rx, = plt.plot(right_eye_t[1:], v_right_eye_x, c='r', label="right eye horizontal velocity")
+line_ry, = plt.plot(right_eye_t[1:], v_right_eye_y, c='orange', label="right eye vertical velocity")
 
 # plt.scatter(diff_left_eye_t, diff_left_eye_x, c='g')
 # plt.scatter(diff_left_eye_t, diff_left_eye_y, c='b')
 #
 # plt.scatter(diff_right_eye_t, diff_right_eye_x, c='r')
 # plt.scatter(diff_right_eye_t, diff_right_eye_y, c='orange')
-
+plt.title('Horizontal and Vertical Eye Velocities')
 plt.ylabel('pixels')
 plt.xlabel('time')
+plt.legend()
 plt.show()
