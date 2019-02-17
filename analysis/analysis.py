@@ -9,8 +9,8 @@ def read_csv_file(filename):
         csv_data = list(reader)
     return csv_data
 
-right_eye_filename = "../data/right_eye.csv"
-left_eye_filename = "../data/left_eye.csv"
+right_eye_filename = "data/right_eye.csv"
+left_eye_filename = "data/left_eye.csv"
 
 right_eye_data = np.array(read_csv_file(right_eye_filename)[1:]).astype(float)
 left_eye_data = np.array(read_csv_file(left_eye_filename)[1:]).astype(float)
