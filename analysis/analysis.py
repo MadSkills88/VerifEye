@@ -39,38 +39,51 @@ for i in range(1, len(left_eye_data)):
     left_eye_x.append(l_x)
     left_eye_y.append(l_y)
 
-diff_right_eye_x = [abs(j-i) for i, j in zip(right_eye_x[:-1], right_eye_x[1:])]
-diff_right_eye_y = [abs(j-i) for i, j in zip(right_eye_y[:-1], right_eye_y[1:])]
-diff_left_eye_x = [abs(j-i) for i, j in zip(left_eye_x[:-1], left_eye_x[1:])]
-diff_left_eye_y = [abs(j-i) for i, j in zip(left_eye_y[:-1], left_eye_y[1:])]
+diff_right_eye_x = [j-i for i, j in zip(right_eye_x[:-1], right_eye_x[1:])]
+diff_right_eye_y = [j-i for i, j in zip(right_eye_y[:-1], right_eye_y[1:])]
+diff_left_eye_x = [j-i for i, j in zip(left_eye_x[:-1], left_eye_x[1:])]
+diff_left_eye_y = [j-i for i, j in zip(left_eye_y[:-1], left_eye_y[1:])]
 
 diff_right_eye_t = [j-i for i, j in zip(right_eye_t[:-1], right_eye_t[1:])]
 diff_left_eye_t = [j-i for i, j in zip(left_eye_t[:-1], left_eye_t[1:])]
 
+v_right_eye_x = [x/y for x, y in zip(diff_right_eye_x, diff_right_eye_t)]
+v_right_eye_y = [x/y for x, y in zip(diff_right_eye_y, diff_right_eye_t)]
+v_left_eye_x = [x/y for x, y in zip(diff_left_eye_x, diff_left_eye_t)]
+v_left_eye_y = [x/y for x, y in zip(diff_left_eye_y, diff_left_eye_t)]
+
+
+
+## Raw position plots and scatter
 # line_lx, = plt.plot(left_eye_t, left_eye_x, 'g', label="left eye x")
 # line_ly, = plt.plot(left_eye_t, left_eye_y, 'b', label="left eye y")
 #
 # line_rx, = plt.plot(right_eye_t, right_eye_x, 'r', label="right eye x")
 # line_ry, = plt.plot(right_eye_t, right_eye_y, 'orange', label="right eye y")
 
-line_lx, = plt.plot(diff_left_eye_t, diff_left_eye_x, 'g', label="left eye x")
-line_ly, = plt.plot(diff_left_eye_t, diff_left_eye_y, 'b', label="left eye y")
-
-line_rx, = plt.plot(diff_right_eye_t, diff_right_eye_x, 'r', label="right eye x")
-line_ry, = plt.plot(diff_right_eye_t, diff_right_eye_y, 'orange', label="right eye y")
-
+# plt.scatter(left_eye_t, left_eye_x, c='g')
+# plt.scatter(left_eye_t, left_eye_y, c='b')
+#
+# plt.scatter(right_eye_t, right_eye_x, c='r')
+# plt.scatter(right_eye_t, right_eye_y, c='orange')
 
 print(left_eye_t)
 print(left_eye_x)
 
 print(diff_left_eye_t)
 print(diff_left_eye_x)
+## Differential plots and scatter
+line_lx, = plt.plot(diff_left_eye_t, diff_left_eye_x, c='g', label="left eye x")
+line_ly, = plt.plot(diff_left_eye_t, diff_left_eye_y, c='b', label="left eye y")
 
-# plt.scatter(left_eye_t, left_eye_x, c='g')
-# plt.scatter(left_eye_t, left_eye_y, c='b')
+line_rx, = plt.plot(diff_right_eye_t, diff_right_eye_x, c='r', label="right eye x")
+line_ry, = plt.plot(diff_right_eye_t, diff_right_eye_y, c='orange', label="right eye y")
+
+# plt.scatter(diff_left_eye_t, diff_left_eye_x, c='g')
+# plt.scatter(diff_left_eye_t, diff_left_eye_y, c='b')
 #
-# plt.scatter(right_eye_t, right_eye_x, c='r')
-# plt.scatter(right_eye_t, right_eye_y, c='orange')
+# plt.scatter(diff_right_eye_t, diff_right_eye_x, c='r')
+# plt.scatter(diff_right_eye_t, diff_right_eye_y, c='orange')
 
 plt.ylabel('pixels')
 plt.xlabel('time')
