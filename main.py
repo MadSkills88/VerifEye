@@ -206,6 +206,7 @@ while True:
                 radius = i[2]
                 cv2.circle(crop_right, center, radius, (255, 0, 255), 3)
                 cv2.rectangle(crop_right, (i[0] - 5, i[1] - 5), (i[0] + 5, i[1] + 5), (0, 128, 255), -1)
+                break
             # print(iris)
             circles = np.uint16(np.around(left_iris))
             for i in circles[0, :]:
@@ -220,6 +221,7 @@ while True:
                 radius = i[2]
                 cv2.circle(crop_left, center, radius, (255, 0, 255), 3)
                 cv2.rectangle(crop_left, (i[0] - 5, i[1] - 5), (i[0] + 5, i[1] + 5), (0, 128, 255), -1)
+                break
 
         cv2.imshow("cropped", crop_left)
 
@@ -259,26 +261,17 @@ while True:
 
                 # Draw right pupil to the right
                 print("samples_y_avg: ", samples_y_avg)
-                cv2.circle(blacked_image, (x_coords_1, samples_y_avg), 15, (0,0,255), -1)
+                cv2.circle(blacked_image, (x_coords_1, 20), 15, (0,0,255), -1)
 
                 # To account for lag
-                cv2.circle(blacked_image, (x_coords_1-1, samples_y_avg), 15, (0,0,255), -1)
-                cv2.circle(blacked_image, (x_coords_1-2, samples_y_avg), 15, (0,0,255), -1)
-                cv2.circle(blacked_image, (x_coords_1-3, samples_y_avg), 15, (0,0,255), -1)
-                cv2.circle(blacked_image, (x_coords_1-4, samples_y_avg), 15, (0,0,255), -1)
-                cv2.circle(blacked_image, (x_coords_1+1, samples_y_avg), 15, (0,0,255), -1)
-                cv2.circle(blacked_image, (x_coords_1+2, samples_y_avg), 15, (0,0,255), -1)
-                cv2.circle(blacked_image, (x_coords_1+3, samples_y_avg), 15, (0,0,255), -1)
-                cv2.circle(blacked_image, (x_coords_1+4, samples_y_avg), 15, (0,0,255), -1)
-
-                cv2.circle(blacked_image, (x_coords_1, samples_y_avg+1), 15, (0,0,255), -1)
-                cv2.circle(blacked_image, (x_coords_1, samples_y_avg+2), 15, (0,0,255), -1)
-                cv2.circle(blacked_image, (x_coords_1, samples_y_avg+3), 15, (0,0,255), -1)
-                cv2.circle(blacked_image, (x_coords_1, samples_y_avg+4), 15, (0,0,255), -1)
-                cv2.circle(blacked_image, (x_coords_1, samples_y_avg-1), 15, (0,0,255), -1)
-                cv2.circle(blacked_image, (x_coords_1, samples_y_avg-2), 15, (0,0,255), -1)
-                cv2.circle(blacked_image, (x_coords_1, samples_y_avg-3), 15, (0,0,255), -1)
-                cv2.circle(blacked_image, (x_coords_1, samples_y_avg-4), 15, (0,0,255), -1)
+                cv2.circle(blacked_image, (x_coords_1-1, 20), 15, (0,0,255), -1)
+                cv2.circle(blacked_image, (x_coords_1-2, 20), 15, (0,0,255), -1)
+                cv2.circle(blacked_image, (x_coords_1-3, 20), 15, (0,0,255), -1)
+                cv2.circle(blacked_image, (x_coords_1-4, 20), 15, (0,0,255), -1)
+                cv2.circle(blacked_image, (x_coords_1+1, 20), 15, (0,0,255), -1)
+                cv2.circle(blacked_image, (x_coords_1+2, 20), 15, (0,0,255), -1)
+                cv2.circle(blacked_image, (x_coords_1+3, 20), 15, (0,0,255), -1)
+                cv2.circle(blacked_image, (x_coords_1+4, 20), 15, (0,0,255), -1)
 
                 # cv2.line(blacked_image, (x?_coords_1, samples_y_avg), (x_coords_1, samples_y_avg), (0,0,255), 3, -1)
 
