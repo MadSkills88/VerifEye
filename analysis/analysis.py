@@ -118,10 +118,14 @@ plt.plot()
 plt.savefig("figs/eye_velocities.png")
 # plt.show()
 
-distances = np.array(read_csv_file("data/distances.csv")[1:]).astype(float)
-line_distances = plt.plot(distances[0], distances[1], c='g', label="Distances between eyes")
+distances = []
+for i in range(min(len(left_eye_data), len(right_eye_data))):
+    distances.append(np.linalg.norm(left_eye_data[i, 1:] - right_eye_data[i, 1:]) + 40)
+
+# distances = np.array(read_csv_file("data/distances.csv")[1:]).astype(float)
 plt.figure(2)
 plt.title('Distances Between Two Eyes (pixels)')
+line_distances = plt.plot(right_eye_t[1:], distances, c='g', label="Distances between eyes")
 plt.ylabel('pixels')
 plt.xlabel('time')
 plt.legend()
