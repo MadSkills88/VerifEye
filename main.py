@@ -9,7 +9,7 @@ from collections import deque
 import time
 import pandas as pd
 import datetime
-
+import os
 import tkinter as tk
 
 # Tracking Balls Lists for Pandas Dataframe
@@ -112,8 +112,11 @@ def apply_brightness_contrast(input_img, brightness = 0, contrast = 0):
 left_eye_times = []
 right_eye_times = []
 # initialize latest time
-
+breakDownAllWindows = False
 while True:
+
+    if breakDownAllWindows:
+        break
     ret, frame = video_capture.read()
     frame = cv2.flip(frame,1)
     src = imutils.resize(frame, width=1200)
@@ -237,12 +240,12 @@ while True:
     # Make sure it is the same
 
     cv2.putText(img = blacked_image,
-                text = "Press 2 to Start/Restart",
+                text = "Press 2 to Start/Restart Eye Tracking Data",
                 org = (0,int(y-y/2)),
                 fontFace = cv2.FONT_HERSHEY_COMPLEX,
-                fontScale = 3,
+                fontScale = 2,
                 color = (255,255,255),
-                thickness = 3,
+                thickness = 2,
                 lineType = cv2.LINE_AA)
 
     if (cv2.waitKey(1) & 0xFF == ord('2')):
@@ -288,6 +291,7 @@ while True:
             else:
                 print("timeElapsed: ", timeElapsed)
                 startTest = False
+                breakDownAllWindows = True
                 cv2.putText(img = blacked_image,
                             text = "Test Done",
                             org = (0,int(y/4)),
@@ -326,34 +330,37 @@ print(left_pts)
 
 print(right_eye_times)
 print(left_eye_times)
+if right_pts:
+    right_eye_data = []
+    for i in range(len(right_pts)):
+        time_step = right_eye_times[i]
+        right_eye_x = right_pts[i][0]
+        right_eye_y = right_pts[i][1]
+        entry = [time_step, right_eye_x, right_eye_y]
+        right_eye_data.append(entry)
 
-right_eye_data = []
-for i in range(len(right_pts)):
-    time_step = right_eye_times[i]
-    right_eye_x = right_pts[i][0]
-    right_eye_y = right_pts[i][1]
-    entry = [time_step, right_eye_x, right_eye_y]
-    right_eye_data.append(entry)
+    right_eye_data = np.array(right_eye_data)
 
-right_eye_data = np.array(right_eye_data)
-
-print(right_eye_data)
-
-left_eye_data = []
-for i in range(len(left_pts)):
-    time_step = left_eye_times[i]
-    left_eye_x = left_pts[i][0]
-    left_eye_y = left_pts[i][1]
-    entry = [time_step, left_eye_x, left_eye_y]
+    print(right_eye_data)
+if left_pts:
+    left_eye_data = []
+    for i in range(len(left_pts)):
+        time_step = left_eye_times[i]
+        left_eye_x = left_pts[i][0]
+        left_eye_y = left_pts[i][1]
+        entry = [time_step, left_eye_x, left_eye_y]
     left_eye_data.append(entry)
 
-left_eye_data = np.array(left_eye_data)
+    left_eye_data = np.array(left_eye_data)
 
-print(left_eye_data)
+# print(left_eye_data)
+if right_pts and left_pts:
+    right_pd = pd.DataFrame(right_eye_data, columns=['t', 'x', 'y'])
 
-right_pd = pd.DataFrame(right_eye_data, columns=['t', 'x', 'y'])
+    left_pd = pd.DataFrame(left_eye_data, columns=['t', 'x', 'y'])
 
-left_pd = pd.DataFrame(left_eye_data, columns=['t', 'x', 'y'])
+    right_pd.to_csv("data/right_eye.csv")
+    left_pd.to_csv("data/left_eye.csv")
 
-right_pd.to_csv("data/right_eye.csv")
-left_pd.to_csv("data/left_eye.csv")
+# Present Graphs
+os.system('python analysis/analysis.py')
