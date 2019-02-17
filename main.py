@@ -279,12 +279,12 @@ while True:
                     backward_timestamps.append(timeElapsed)
                     backward_x.append(x_coords_1)
                     backward_y.append(samples_y_avg)
-                    x_coords_1-=10
+                    x_coords_1-=15
                 else:
                     forward_timestamps.append(timeElapsed)
                     forward_x.append(x_coords_1)
                     forward_y.append(samples_y_avg)
-                    x_coords_1+=10
+                    x_coords_1+=15
             else:
                 print("timeElapsed: ", timeElapsed)
                 startTest = False
