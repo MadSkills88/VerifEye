@@ -23,7 +23,7 @@ left_eye_x = []
 left_eye_y = []
 left_eye_t = []
 
-for i in range(1, len(right_eye_data)):
+for i in range(len(right_eye_data)):
     r_t = right_eye_data[i][1]
     r_x = right_eye_data[i][2]
     r_y = right_eye_data[i][3]
@@ -31,7 +31,7 @@ for i in range(1, len(right_eye_data)):
     right_eye_x.append(r_x)
     right_eye_y.append(r_y)
 
-for i in range(1, len(left_eye_data)):
+for i in range(len(left_eye_data)):
     l_t = left_eye_data[i][1]
     l_x = left_eye_data[i][2]
     l_y = left_eye_data[i][3]

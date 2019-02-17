@@ -68,6 +68,7 @@ video_capture=cv2.VideoCapture(0)
 
 right_pts = []
 left_pts= []
+distances = []
 
 def eye_aspect_ratio(eye):
     A = distance.euclidean(eye[1], eye[5])
@@ -145,9 +146,12 @@ while True:
 
         left_max = (np.max(leftEye[:, 0] + 10), np.max(leftEye[:, 1]) + 10)
         left_min = (min(leftEye[:, 0]) - 10, min(leftEye[:, 1]) - 10)
+        left_avg = np.array([np.mean(leftEye[:,0]), np.mean(leftEye[:,1])])
 
         right_max = (max(rightEye[:,0]) + 10, max(rightEye[:,1]) + 10)
         right_min = (min(rightEye[:,0]) - 10, min(rightEye[:,1]) - 10)
+        right_avg = np.array([np.mean(rightEye[:,0]), np.mean(rightEye[:,1])])
+        dist = np.linalg.norm(left_avg - right_avg)
         #     (max(leftEye[:,1]) + min(leftEye[:,1]))//2)
         left_range = cv2.rectangle(src, left_min, left_max, (0, 128, 255), 1)
         right_range = cv2.rectangle(src, right_min, right_max, (0, 128, 255), 1)
@@ -162,6 +166,7 @@ while True:
 
         if startTest and doneCalibrating:
             timeElapsed = (datetime.datetime.now() - startTime).total_seconds()
+            distances.append([timeElapsed, dist])
             print("timeElapsed", timeElapsed)
         else:
             timeElapsed = 0
@@ -361,5 +366,8 @@ if right_pts and left_pts:
     right_pd.to_csv("data/right_eye.csv")
     left_pd.to_csv("data/left_eye.csv")
 
+if distances:
+    dist_pd = pd.DataFrame(distances, columns=['t', 'dist'])
+    dist_pd.to_csv("data/distances.csv")
 # Present Graphs
 os.system('python analysis/analysis.py')
