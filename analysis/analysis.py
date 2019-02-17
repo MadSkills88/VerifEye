@@ -55,6 +55,11 @@ v_right_eye_y = [x/y for x, y in zip(diff_right_eye_y, diff_right_eye_t)]
 v_left_eye_x = [x/y for x, y in zip(diff_left_eye_x, diff_left_eye_t)]
 v_left_eye_y = [x/y for x, y in zip(diff_left_eye_y, diff_left_eye_t)]
 
+a_right_eye_x = [x/y for x, y in zip(v_right_eye_x, diff_right_eye_t)]
+a_right_eye_y = [x/y for x, y in zip(v_right_eye_y, diff_right_eye_t)]
+a_left_eye_x = [x/y for x, y in zip(v_left_eye_x, diff_left_eye_t)]
+a_left_eye_y = [x/y for x, y in zip(v_left_eye_y, diff_left_eye_t)]
+
 print(len(v_left_eye_x))
 
 ## Raw position plots and scatter
@@ -77,6 +82,7 @@ print(diff_left_eye_t)
 print(diff_left_eye_x)
 
 print(v_left_eye_x)
+print(a_left_eye_x)
 ## Differential plots and scatter
 # line_lx, = plt.plot(diff_left_eye_t, diff_left_eye_x, c='g', label="left eye x")
 # line_ly, = plt.plot(diff_left_eye_t, diff_left_eye_y, c='b', label="left eye y")
@@ -102,8 +108,24 @@ line_ry, = plt.plot(right_eye_t[1:], v_right_eye_y, c='orange', label="right eye
 #
 # plt.scatter(diff_right_eye_t, diff_right_eye_x, c='r')
 # plt.scatter(diff_right_eye_t, diff_right_eye_y, c='orange')
+
 plt.title('Horizontal and Vertical Eye Velocities')
 plt.ylabel('pixels')
 plt.xlabel('time')
 plt.legend()
+plt.plot()
+plt.savefig("figs/eye_velocities.png")
 plt.show()
+
+# ## Acceleration plots and scatter
+# line_lx, = plt.plot(left_eye_t[1:], a_left_eye_x, c='g', label="left eye horizontal acceleration")
+# line_ly, = plt.plot(left_eye_t[1:], a_left_eye_y, c='b', label="left eye vertical acceleration")
+#
+# line_rx, = plt.plot(right_eye_t[1:], a_right_eye_x, c='r', label="right eye horizontal acceleration")
+# line_ry, = plt.plot(right_eye_t[1:], a_right_eye_y, c='orange', label="right eye vertical acceleration")
+#
+# plt.title('Horizontal and Vertical Eye Accelerations')
+# plt.ylabel('pixels')
+# plt.xlabel('time')
+# plt.legend()
+# plt.show()
