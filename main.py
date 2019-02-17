@@ -23,7 +23,7 @@ backward_timestamps = []
 backward_x = []
 backward_y = []
 
-TIME_CAP = 10
+TIME_CAP = 30
 
 n = 0
 x_coords_1 = 600
