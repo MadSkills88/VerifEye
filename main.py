@@ -64,6 +64,7 @@ doneCalibrating = False
 print("[INFO] starting video stream thread...")
 
 video_capture=cv2.VideoCapture(0)
+# video_capture.set(cv2.CAP_PROP_FPS, 60)
 
 right_pts = []
 left_pts= []
@@ -230,6 +231,9 @@ while True:
             samples_y_avg = int(samples_y_total / samples_y_counter)
             doneCalibrating = True
 
+        print("left_pts", left_pts)
+        print("right_pts", right_pts)
+
     # Make sure it is the same
 
     cv2.putText(img = blacked_image,
@@ -257,7 +261,28 @@ while True:
 
                 # Draw right pupil to the right
                 print("samples_y_avg: ", samples_y_avg)
-                cv2.circle(blacked_image, (x_coords_1, samples_y_avg), 20, (0,0,255), -1)
+                cv2.circle(blacked_image, (x_coords_1, samples_y_avg), 15, (0,0,255), -1)
+
+                # To account for lag
+                cv2.circle(blacked_image, (x_coords_1-1, samples_y_avg), 15, (0,0,255), -1)
+                cv2.circle(blacked_image, (x_coords_1-2, samples_y_avg), 15, (0,0,255), -1)
+                cv2.circle(blacked_image, (x_coords_1-3, samples_y_avg), 15, (0,0,255), -1)
+                cv2.circle(blacked_image, (x_coords_1-4, samples_y_avg), 15, (0,0,255), -1)
+                cv2.circle(blacked_image, (x_coords_1+1, samples_y_avg), 15, (0,0,255), -1)
+                cv2.circle(blacked_image, (x_coords_1+2, samples_y_avg), 15, (0,0,255), -1)
+                cv2.circle(blacked_image, (x_coords_1+3, samples_y_avg), 15, (0,0,255), -1)
+                cv2.circle(blacked_image, (x_coords_1+4, samples_y_avg), 15, (0,0,255), -1)
+
+                cv2.circle(blacked_image, (x_coords_1, samples_y_avg+1), 15, (0,0,255), -1)
+                cv2.circle(blacked_image, (x_coords_1, samples_y_avg+2), 15, (0,0,255), -1)
+                cv2.circle(blacked_image, (x_coords_1, samples_y_avg+3), 15, (0,0,255), -1)
+                cv2.circle(blacked_image, (x_coords_1, samples_y_avg+4), 15, (0,0,255), -1)
+                cv2.circle(blacked_image, (x_coords_1, samples_y_avg-1), 15, (0,0,255), -1)
+                cv2.circle(blacked_image, (x_coords_1, samples_y_avg-2), 15, (0,0,255), -1)
+                cv2.circle(blacked_image, (x_coords_1, samples_y_avg-3), 15, (0,0,255), -1)
+                cv2.circle(blacked_image, (x_coords_1, samples_y_avg-4), 15, (0,0,255), -1)
+
+                # cv2.line(blacked_image, (x?_coords_1, samples_y_avg), (x_coords_1, samples_y_avg), (0,0,255), 3, -1)
 
                 if negative:
                     backward_timestamps.append(timeElapsed)
