@@ -109,12 +109,24 @@ line_ry, = plt.plot(right_eye_t[1:], v_right_eye_y, c='orange', label="right eye
 # plt.scatter(diff_right_eye_t, diff_right_eye_x, c='r')
 # plt.scatter(diff_right_eye_t, diff_right_eye_y, c='orange')
 
+plt.figure(1)
 plt.title('Horizontal and Vertical Eye Velocities')
 plt.ylabel('pixels')
 plt.xlabel('time')
 plt.legend()
 plt.plot()
 plt.savefig("figs/eye_velocities.png")
+# plt.show()
+
+distances = np.array(read_csv_file("data/distances.csv")[1:]).astype(float)
+line_distances = plt.plot(distances[0], distances[1], c='g', label="Distances between eyes")
+plt.figure(2)
+plt.title('Distances Between Two Eyes (pixels)')
+plt.ylabel('pixels')
+plt.xlabel('time')
+plt.legend()
+plt.plot()
+plt.savefig("figs/eye_distances.png")
 plt.show()
 
 # ## Acceleration plots and scatter
