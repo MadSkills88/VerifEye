@@ -190,7 +190,7 @@ while True:
                 # Get time of right eye measurement
                 right_time = timeElapsed
         # print(pupils, iris)
-        if right_iris is not None:
+        if right_iris is not None and left_iris is not None:
             # print(iris)
             circles = np.uint16(np.around(right_iris))
             for i in circles[0, :]:
@@ -206,8 +206,6 @@ while True:
                 radius = i[2]
                 cv2.circle(crop_right, center, radius, (255, 0, 255), 3)
                 cv2.rectangle(crop_right, (i[0] - 5, i[1] - 5), (i[0] + 5, i[1] + 5), (0, 128, 255), -1)
-
-        if left_iris is not None:
             # print(iris)
             circles = np.uint16(np.around(left_iris))
             for i in circles[0, :]:
